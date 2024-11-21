@@ -49,7 +49,7 @@ provide('cart', {
 
 <template>
   <Drawer v-if="isCartOpen" :total-price="totalPrice" :tax-amount="taxAmount" />
-  <div class="w-4/5 m-auto bg-white shadow-xl mt-14 rounded-xl">
+  <div class="w-4/5 m-auto bg-white shadow-xl my-14 rounded-xl">
     <Header :total-price="totalPrice" :cartToggle="cartToggle" />
 
     <div class="p-10">

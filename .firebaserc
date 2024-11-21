@@ -1,5 +1,8 @@
 {
   "projects": {
-    "default": "progect-sneakers"
-  }
+    "default": "progect-sneakers",
+    "production": "true-sneakers"
+  },
+  "targets": {},
+  "etags": {}
 }
