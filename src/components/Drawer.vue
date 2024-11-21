@@ -1,9 +1,9 @@
 <script setup>
-import DrawerHead from './DrawerHead.vue'
-import CartItemList from './CartItemList.vue'
-import InfoBlock from './InfoBlock.vue'
-import { computed, inject, ref } from 'vue'
-import { createOrder } from '../../firestoreService'
+import DrawerHead from './DrawerHead.vue';
+import CartItemList from './CartItemList.vue';
+import InfoBlock from './InfoBlock.vue';
+import { computed, inject, ref } from 'vue';
+import { createOrder } from '../../firestoreService';
 
 const props = defineProps({
   totalPrice: Number,
