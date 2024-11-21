@@ -1,19 +1,19 @@
 <script setup>
 import CardList from '@/components/CardList.vue';
-import axios from 'axios';
-
-import { BASE_URL } from '@/const';
 import { computed, inject, onMounted, ref, watch } from 'vue';
 import debounce from 'lodash.debounce';
+import { fetchFavorites, fetchItems } from '../../firestoreService';
+import { deleteDoc, doc, setDoc } from 'firebase/firestore';
+import { db } from "../../firebase";
 
 const { cart, addToCart, removeFromCart } = inject('cart');
 const sortBy = ref('');
-const items = ref([]);  
+const items = ref([]);
 const debouncedSearchQuery = ref('');
 
-const fetchItems = async () => {
+const loadItems  = async () => {
   try {
-    const { data } = await axios.get(BASE_URL + 'items')
+    const data  = await fetchItems();
     items.value = data.map((obj) => ({
       ...obj,
       isFavorite: false,
@@ -25,11 +25,11 @@ const fetchItems = async () => {
   }
 }
 
-const fetchFavorites = async () => {
+const loadFavorites = async () => {
   try {
-    const { data: favorites } = await axios.get(BASE_URL + 'favorites')
+    const data = await fetchFavorites();
     items.value = items.value.map((item) => {
-      const favorite = favorites.find((favorite) => favorite.parentId === item.id)
+      const favorite = data.find((favorite) => favorite.parentId === item.id)
 
       if (!favorite) {
         return item
@@ -55,8 +55,8 @@ try {
 }
 cart.value = localCart;
 
-  await fetchItems()
-  await fetchFavorites()
+  await loadItems();
+  await loadFavorites();
 });
 
 const debouncedSearch = debounce((query) => {
@@ -86,24 +86,30 @@ const filteredItems = computed(() => {
 const addToFavorite = async (item) => {
   try {
     if (!item.isFavorite) {
+      const favoriteDocRef  = doc(db, 'favorites', String(item.id));
       const obj = {
         parentId: item.id,
-        item
+        item,
       }
+
+      await setDoc(favoriteDocRef, obj)
+
       item.isFavorite = true;
-
-      const { data } = await axios.post(BASE_URL + 'favorites', obj)
-
-      item.favoriteId = data.id
+      item.favoriteId = item.id;
     } else {
-      item.isFavorite = false
-      await axios.delete(BASE_URL + 'favorites/' + item.favoriteId)
-      item.favoriteId = null
+      const favoriteDocRef  = doc(db, 'favorites', item.favoriteId);
+
+      await deleteDoc(favoriteDocRef);
+
+      item.isFavorite = false;
+      item.favoriteId = null;
+
     }
   } catch (error) {
-    console.log(error)
+    console.log("Error updating favorites:", error);
   }
 }
+
 
 
 
@@ -114,7 +120,7 @@ const onClickAddPlus = (item) => {
     removeFromCart(item)
   }
 }
-watch(sortBy, fetchItems);
+watch(sortBy, loadItems);
 watch(cart, () => {
   items.value = items.value.map(item => ({
     ...item,

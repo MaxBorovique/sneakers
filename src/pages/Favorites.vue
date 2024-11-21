@@ -1,14 +1,14 @@
 <script setup>
 import CardList from '@/components/CardList.vue';
-import { BASE_URL } from '@/const';
-import axios from 'axios';
 import { onMounted, ref } from 'vue';
+import { fetchFavorites } from '../../firestoreService';
 
 const favorites = ref([]);
 
 onMounted(async() => {
   try {
-    const { data } = await axios.get(BASE_URL + 'favorites');
+    const data = await fetchFavorites();
+    console.log(data);
 
     favorites.value = data.map(item => item.item);
   } catch (error) {

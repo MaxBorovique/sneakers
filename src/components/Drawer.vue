@@ -3,8 +3,7 @@ import DrawerHead from './DrawerHead.vue'
 import CartItemList from './CartItemList.vue'
 import InfoBlock from './InfoBlock.vue'
 import { computed, inject, ref } from 'vue'
-import axios from 'axios'
-import { BASE_URL } from '@/const'
+import { createOrder } from '../../firestoreService'
 
 const props = defineProps({
   totalPrice: Number,
@@ -17,21 +16,18 @@ const isCreating = ref(false)
 const orderId = ref(null)
 
 const cartIsEmpty = computed(() => !cart.value.length)
-const buttonDisabled = computed(() => isCreating.value || cartIsEmpty.value)
+const buttonDisabled = computed(() => isCreating.value || cartIsEmpty.value);
 
-const createOrder = async () => {
-  isCreating.value = true
+const handleCreateOrder = async () => {
+  isCreating.value = true;
   try {
-    const { data } = await axios.post(BASE_URL + 'orders', {
-      items: cart.value,
-      totalPrice: props.totalPrice,
-    })
+    const data = await createOrder(cart.value, props.totalPrice);
 
     cart.value = []
 
     orderId.value = data.id
   } catch (error) {
-    console.log(error)
+console.log(error);
   } finally {
     isCreating.value = false
   }
@@ -79,7 +75,7 @@ const createOrder = async () => {
               </div>
               <button
                 :disabled="buttonDisabled"
-                @click="createOrder"
+                @click="handleCreateOrder"
                 class="w-full py-3 mt-4 text-white transition cursor-pointer bg-lime-500 rounded-xl disabled:bg-slate-300 hover:bg-lime-600 active:bg-lime-700 disabled:cursor-not-allowed"
               >
                 Checkout
