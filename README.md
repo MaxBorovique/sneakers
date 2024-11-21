@@ -1,7 +1,7 @@
 # Vue Sneakers
 
 [DEMO](https://true-sneakers.web.app/)
-![Project Screenshot](https://drive.google.com/uc?id=1EQmnDKCoe3mTeMpQvaoLEya1mN9YHBqa)
+![Project Screenshot](https://drive.google.com/uc?id=1ZijFdfsU2qyE6gfrI8lXr5WayHSaO6g5)
 
 Vue Sneakers is a modern web project built with **Vue 3**, using **Firebase** for data handling, **Vite** as the build tool, **TailwindCSS** for styling, and integrates **ESLint** and **Prettier** for maintaining code quality.
 
